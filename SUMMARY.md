@@ -20,5 +20,5 @@
   * [fabric](pei-zhi-guan-li-lei-gong-ju/fabric.md)
 * [代理工具](vpn.md)
   * [shadowsocks](shadowsocks.md)
-* 配置管理类工具
+* [配置管理类工具](pei-zhi-guan-li-lei-gong-ju.md)
 
