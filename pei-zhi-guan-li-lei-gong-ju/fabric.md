@@ -8,8 +8,6 @@ Fabric 是一个 Python \(2.5-2.7\) 的库和命令行工具，用来提高基�
 
 * 一个让通过 SSH 执行 Shell 命令更加**容易**、**更符合 Python 风格**的命令库（建立于一个更低层次的库）
 
-
-
 1. start
 
 ```
@@ -20,7 +18,7 @@ def hello():
 $ fab hello
 Hello world!
 
-Done.        
+Done.
 ```
 
 2.带参数的任务
@@ -48,7 +46,7 @@ def run_local():
     local("echo 'aa'")
     local("hostname")
     local("ls")
-    
+
 $ fab run_local
 [localhost] local: echo 'aa'
 aa
@@ -120,23 +118,99 @@ env.hosts = ['host1', 'host2']
 
 def taskA():
     run('ls')
-    
+
 def taskB():
     run('whoami')
+    
 
 $ fab taskA taskB
+
+$ fab -H host1,host2 mytask
+
+$ fab mytask:hosts="host1;host2"
+
 ```
+
+```
+$ cat fabfile.py
+
+from fabric.api import *
+
+env.use_ssh_config = True
+
+@hosts('my_test', 'my_test1')
+def run_remote():
+    print("Executing on %s as %s" % (env.host, env.user))
+    run("hostname")
+    print("Executing cmd %s" % env.command)
+    run("w")
+$ fab run_remote
+```
+
+```
+
+```
+
+
 
 7.角色
 
 一个符合条件的主机集合
 
-
-
 ```
 from fabric.api import env
 
 env.roledefs['webservers'] = ['www1', 'www2', 'www3']
+```
+
+```
+from fabric.api import env
+
+env.roledefs = {
+    'web': {
+        'hosts': ['www1', 'www2', 'www3'],
+        'foo': 'bar'
+    },
+    'dns': {
+        'hosts': ['ns1', 'ns2'],
+        'foo': 'baz'
+    }
+}
+```
+
+```
+cat fabfile.py
+from fabric.api import *
+
+env.use_ssh_config = True
+
+env.roledefs = {'web': ['my_test', 'my_test1']}
+
+@roles('web')
+def run_remote():
+    print("Executing on %s as %s" % (env.host, env.user))
+    run("hostname")
+    print("Executing cmd %s" % env.command)
+    run("w")
+    
+$ fab run_remote
+```
+
+```
+$ fab run_remote:roles=web,exclude_hosts="my_test1"
+```
+
+8.fab 命令行
+
+```
+### 执行shell命令
+
+$ fab [options] -- [shell command] 
+
+$ fab -H my_test,my_test1 -- hostname
+
+
+
 
 ```
 
